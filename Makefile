@@ -4,20 +4,20 @@ ENV_DIR=.$(PYTHON)_env
 IN_ENV=. $(ENV_DIR)/bin/activate
 
 env-dev:
-	$(eval include config/.env.dev)
-	$(eval export $(shell sed 's/=.*//' config/.env.dev))
+	$(eval include env/.env.dev)
+	$(eval export $(shell sed 's/=.*//' env/.env.dev))
 
 env-test:
-	$(eval include config/.env.test)
-	$(eval export $(shell sed 's/=.*//' config/.env.test))
+	$(eval include env/.env.test)
+	$(eval export $(shell sed 's/=.*//' env/.env.test))
 
 env-staging:
-	$(eval include config/.env.staging)
-	$(eval export $(shell sed 's/=.*//' config/.env.staging))
+	$(eval include env/.env.staging)
+	$(eval export $(shell sed 's/=.*//' env/.env.staging))
 
 env-prod:
-	$(eval include config/.env.prod)
-	$(eval export $(shell sed 's/=.*//' config/.env.prod))
+	$(eval include env/.env.prod)
+	$(eval export $(shell sed 's/=.*//' env/.env.prod))
 
 celery: env-dev
 	$(IN_ENV) && cd api && celery -A config worker --beat -l info -S django
@@ -31,7 +31,7 @@ deploy-staging: env-staging build-frontend
 	docker-compose -f docker-compose.prod.yml up --build -d
 
 docker-down: env-prod
-	docker-compose -f docker-compose.staging.yml down
+	docker-compose -f docker-compose.prod.yml down
 
 docker-logs: env-prod
 	docker-compose -f docker-compose.staging.yml logs -f
@@ -41,7 +41,7 @@ build-python:
 	$(IN_ENV) && pip3 install -r api/requirements.txt
 
 build-frontend:
-	cd frontend && npm i && quasar build
+	cd frontend && npm i && quasar build -m ssr
 
 backend-serve: env-dev migrations
 	$(IN_ENV) && python $(DJANGO_MANAGE) runserver
@@ -49,13 +49,15 @@ backend-serve: env-dev migrations
 frontend-serve: env-dev
 	cd frontend && quasar dev
 
+frontend-prod-serve: env-prod
+	cd frontend/dist/ssr/ && npm run start
+
 run-django-scripts: env-dev
-	@$(IN_ENV) && python $(DJANGO_MANAGE) runscript <scriptname>
+	@$(IN_ENV) && python $(DJANGO_MANAGE) runscript create_test_users
 
 migrations: env-dev
 	$(IN_ENV) && python $(DJANGO_MANAGE) makemigrations --noinput
 	$(IN_ENV) && python $(DJANGO_MANAGE) migrate --noinput
-
 
 flush-the-database-yes-really: env-dev
 	$(IN_ENV) && python $(DJANGO_MANAGE) flush
