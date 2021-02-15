@@ -47,7 +47,7 @@ backend-serve: env-dev migrations
 	$(IN_ENV) && python $(DJANGO_MANAGE) runserver
 
 frontend-serve: env-dev
-	cd frontend && quasar dev
+	cd frontend && quasar dev -m ssr
 
 frontend-prod-serve: env-prod
 	cd frontend/dist/ssr/ && npm run start
