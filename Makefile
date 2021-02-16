@@ -34,7 +34,7 @@ docker-down: env-prod
 	docker-compose -f docker-compose.prod.yml down
 
 docker-logs: env-prod
-	docker-compose -f docker-compose.staging.yml logs -f
+	docker-compose -f docker-compose.prod.yml logs -f
 
 build-python:
 	virtualenv -p $(PYTHON) $(ENV_DIR)
