@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 
+<<<<<<< HEAD
 export default (state) => {
     /* Here we give the authorization tokens to Axios,
     and set the Vuex store with that axios instance. */
@@ -13,3 +14,6 @@ export default (state) => {
     Vue.prototype.$axios = axios
     state.store.state.authInfo.$axios = axios
 }
+=======
+Vue.prototype.$axios = axios
+>>>>>>> base

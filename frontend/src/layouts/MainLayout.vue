@@ -1,16 +1,45 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <!-- Navigation bar -->
     <q-header elevated>
-      <navbar />
+      <q-toolbar>
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="leftDrawerOpen = !leftDrawerOpen"
+        />
+
+        <q-toolbar-title>
+          Quasar App
+        </q-toolbar-title>
+
+        <div>Quasar v{{ $q.version }}</div>
+      </q-toolbar>
     </q-header>
 
-    <!-- Hidden Login form Modal -->
-    <q-dialog v-model="loginDialog" persistent>
-      <login-form />
-    </q-dialog>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      content-class="bg-grey-1"
+    >
+      <q-list>
+        <q-item-label
+          header
+          class="text-grey-8"
+        >
+          Essential Links
+        </q-item-label>
+        <EssentialLink
+          v-for="link in essentialLinks"
+          :key="link.title"
+          v-bind="link"
+        />
+      </q-list>
+    </q-drawer>
 
-    <!-- Main content Body -->
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -18,32 +47,61 @@
 </template>
 
 <script>
-import EssentialLink from "components/EssentialLink.vue";
-import Navbar from "components/Navbar.vue";
-import LoginForm from "components/LoginForm.vue";
+import EssentialLink from 'components/EssentialLink.vue'
+
+const linksData = [
+  {
+    title: 'Docs',
+    caption: 'quasar.dev',
+    icon: 'school',
+    link: 'https://quasar.dev'
+  },
+  {
+    title: 'Github',
+    caption: 'github.com/quasarframework',
+    icon: 'code',
+    link: 'https://github.com/quasarframework'
+  },
+  {
+    title: 'Discord Chat Channel',
+    caption: 'chat.quasar.dev',
+    icon: 'chat',
+    link: 'https://chat.quasar.dev'
+  },
+  {
+    title: 'Forum',
+    caption: 'forum.quasar.dev',
+    icon: 'record_voice_over',
+    link: 'https://forum.quasar.dev'
+  },
+  {
+    title: 'Twitter',
+    caption: '@quasarframework',
+    icon: 'rss_feed',
+    link: 'https://twitter.quasar.dev'
+  },
+  {
+    title: 'Facebook',
+    caption: '@QuasarFramework',
+    icon: 'public',
+    link: 'https://facebook.quasar.dev'
+  },
+  {
+    title: 'Quasar Awesome',
+    caption: 'Community Quasar projects',
+    icon: 'favorite',
+    link: 'https://awesome.quasar.dev'
+  }
+];
 
 export default {
-  name: "MainLayout",
-  components: {
-    EssentialLink,
-    Navbar,
-    LoginForm,
-  },
-  mounted() {
-    this.$q.notify.setDefaults({
-      color: "green-4",
-      textColor: "white",
-      icon: "cloud_done",
-      message: "Successful",
-      position: "bottom-right",
-      timeout: 2000,
-      actions: [{ icon: "close", color: "white" }],
-    });
-  },
-  computed: {
-    loginDialog() {
-      return this.$store.state.authInfo.loginDialog;
+  name: 'MainLayout',
+  components: { EssentialLink },
+  data () {
+    return {
+      leftDrawerOpen: false,
+      essentialLinks: linksData
     }
   }
-};
+}
 </script>
