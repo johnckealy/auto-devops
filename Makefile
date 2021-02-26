@@ -6,14 +6,12 @@ env-prod:
 	$(eval include env/.env.prod)
 	$(eval export $(shell sed 's/=.*//' env/.env.prod))
 
-deploy-prod: env-prod build-frontend
-	echo "Building ${ENVIRONMENT} Environment"
-	docker-compose -f docker-compose.prod.yml up --build -d
+deploy-prod: env-prod env-sub
+	sudo docker-compose up --build
 
-# deploy production without -d flag for server testing
-deploy-prod-nod: env-prod build-frontend
-	echo "Building ${ENVIRONMENT} Environment"
-	docker-compose -f docker-compose.prod.yml up --build
+env-sub:
+	envsubst < "docker-compose.prod.yml" > "docker-compose.yml"
+	envsubst < "caddy/Caddyfile.template" > "caddy/Caddyfile"
 
 docker-down: env-prod
 	docker-compose -f docker-compose.prod.yml down

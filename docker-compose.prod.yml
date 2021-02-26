@@ -21,43 +21,12 @@ services:
         volumes:
             - ${ROOT_FOLDER}/caddy/Caddyfile:/etc/caddy/Caddyfile
         environment:
-            - API_URL=${API_URL}
             - ORIGIN_URL=${ORIGIN_URL}
             - LETS_ENCRYPT_ENDPOINT=${LETS_ENCRYPT_ENDPOINT}
             - LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
         networks:
             - web
 
-    # Django web app
-    django:
-        restart: always
-        build:
-            context: ${ROOT_FOLDER}/api
-            dockerfile: ${ROOT_FOLDER}/api/Dockerfile
-        expose:
-            - 8000
-        environment:
-            - url=${API_URL}
-        command:
-            "gunicorn config.wsgi:application --bind 0.0.0.0:8000"
-        env_file:
-            - ${ROOT_FOLDER}/env/.env.${ENVIRONMENT}
-        depends_on:
-            - db
-        networks:
-            - web
-
-
-    # Django database
-    db:
-        restart: always
-        image: postgres:12.0-alpine
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/
-        env_file:
-            - ${ROOT_FOLDER}/env/.env.db
-        networks:
-            - web
 
     # Nuxt frontend app
     quasar:
