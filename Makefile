@@ -6,8 +6,10 @@ env-prod:
 	$(eval include env/.env.prod)
 	$(eval export $(shell sed 's/=.*//' env/.env.prod))
 
+all: env-prod build-frontend deploy-prod
+
 deploy-prod: env-prod env-sub
-	sudo docker-compose up --build
+	docker-compose up --build
 
 env-sub:
 	envsubst < "docker-compose.prod.yml" > "docker-compose.yml"
