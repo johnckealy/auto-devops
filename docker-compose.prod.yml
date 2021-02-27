@@ -3,43 +3,23 @@ version: "3.5"
 
 # External network
 networks:
-    web:
+    caddyweb:
         external: true
 
-volumes:
-    postgres_data:
-
-
 services:
-    # CaddyServer reverse proxy
-    caddy:
-        restart: always
-        image: caddy:2-alpine
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ${ROOT_FOLDER}/caddy/Caddyfile:/etc/caddy/Caddyfile
-        environment:
-            - ORIGIN_URL=${ORIGIN_URL}
-            - LETS_ENCRYPT_ENDPOINT=${LETS_ENCRYPT_ENDPOINT}
-            - LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
-        networks:
-            - web
-
 
     # Nuxt frontend app
     quasar:
-        build: ${ROOT_FOLDER}/frontend/
+        build: ./frontend/
         ports:
-            - "3000:3000"
+            - "${PORT}:${PORT}"
         environment:
             - url=${ORIGIN_URL}
         volumes:
             - ./frontend:/var/lib/frontend
         command:
-            bash -c "cd dist/ssr/ && npm run start"
+            bash -c "cd dist/ssr/ && PORT=${PORT} npm run start"
         env_file:
-            - ./env/.env.${ENVIRONMENT}
+            - ./env/.env.prod
         networks:
-            - web
+            - caddyweb

@@ -11,7 +11,6 @@ deploy-prod: env-prod env-sub
 
 env-sub:
 	envsubst < "docker-compose.prod.yml" > "docker-compose.yml"
-	envsubst < "caddy/Caddyfile.template" > "caddy/Caddyfile"
 
 docker-down: env-prod
 	docker-compose -f docker-compose.prod.yml down
