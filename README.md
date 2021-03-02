@@ -1,3 +1,5 @@
-# Base Branch
+# Auto DevOps
 
-This branch includes dev and and prod production docker environments, the Makefile, django api with JWT auth, github actions, and a fresh quasar install.
+### Static Site Branch
+
+This is a streamlined version, with no Django Backend.
